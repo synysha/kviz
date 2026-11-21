@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="sk"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rodinný kvíz</title>
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--tx:#1d1d22;--mu:#6b6b76;--ac:#5b4bdb;--ok:#1f9d55;--bad:#d64545;--bd:#e3e0d8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17171c;--card:#23232b;--tx:#f1f1f4;--mu:#9a9aa8;--ac:#8a7dff;--ok:#3ec97a;--bad:#ff6b6b;--bd:#35353f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#17171c;--card:#23232b;--tx:#f1f1f4;--mu:#9a9aa8;--ac:#8a7dff;--ok:#3ec97a;--bad:#ff6b6b;--bd:#35353f;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh}
+#app{max-width:760px;margin:0 auto;padding:16px}
+.tv #app{max-width:1100px;font-size:1.35em}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;margin:12px 0}
+h1{font-size:1.5em;margin:.2em 0}h2{margin:.2em 0 .5em}
+.mu{color:var(--mu);font-size:.85em}
+.q{font-size:1.35em;font-weight:650;margin:.3em 0 .8em}
+.opt{display:block;width:100%;text-align:left;font:inherit;padding:14px 16px;margin:8px 0;border-radius:12px;border:2px solid var(--bd);background:var(--card);color:var(--tx);cursor:pointer}
+.opt.sel{border-color:var(--ac);background:color-mix(in srgb,var(--ac) 14%,var(--card))}
+.opt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 18%,var(--card))}
+.opt.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,var(--card))}
+.btn{font:inherit;font-weight:650;padding:13px 20px;border:0;border-radius:12px;background:var(--ac);color:#fff;cursor:pointer;margin:6px 6px 6px 0}
+.btn.alt{background:var(--card);color:var(--tx);border:2px solid var(--bd)}
+input{font:inherit;padding:13px;border-radius:12px;border:2px solid var(--bd);background:var(--card);color:var(--tx);width:100%;margin:6px 0}
+table{width:100%;border-collapse:collapse}td,th{padding:9px 6px;border-bottom:1px solid var(--bd);text-align:center}td:first-child,th:first-child{text-align:left}
+.tot{font-weight:800}.pill{display:inline-block;padding:3px 10px;border-radius:99px;background:var(--bd);margin:2px;font-size:.85em}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.scroll{overflow-x:auto}
+</style></head>
+<body><div id="app">Načítavam…</div>
+<script>
+const TOPICS=[
+["🇸🇰 Slovensko",["Ktorý je najvyšší vrch Slovenska?|Gerlachovský štít|Lomnický štít|Kriváň|Rysy","Ktorá rieka je najdlhšia na Slovensku?|Váh|Hron|Hornád|Nitra","Ktoré mesto je druhé najväčšie na Slovensku?|Košice|Prešov|Nitra|Žilina","V ktorom roku vznikla samostatná Slovenská republika?|1993|1991|1992|1994","Ktoré pleso je najväčšie vo Vysokých Tatrách?|Veľké Hincovo pleso|Štrbské pleso|Popradské pleso|Skalnaté pleso"]],
+["🌍 Zemepis",["Ktorý oceán je najväčší?|Tichý|Atlantický|Indický|Severný ľadový","Aké je hlavné mesto Austrálie?|Canberra|Sydney|Melbourne|Perth","Ktorý kontinent má najviac obyvateľov?|Ázia|Afrika|Európa|Severná Amerika","Aké je hlavné mesto Kanady?|Ottawa|Toronto|Montreal|Vancouver","Ktorá hora je najvyššia na svete?|Mount Everest|K2|Kilimandžáro|Mont Blanc"]],
+["🐾 Zvieratá",["Ktoré zviera je najrýchlejšie na súši?|Gepard|Lev|Antilopa|Pštros","Koľko nôh má pavúk?|8|6|10|12","Ktoré zviera je najväčšie na svete?|Modrá veľryba|Slon africký|Žralok veľrybí|Žirafa","Ako sa volá mláďa kravy?|Teľa|Žriebä|Jahňa|Prasiatko","Ktoré zviera spáva hore nohami?|Netopier|Sova|Líška|Ježko"]],
+["🍕 Jedlo a pitie",["Z čoho sa vyrába hummus?|Z cíceru|Zo šošovice|Z fazule|Z hrachu","Z ktorej krajiny pochádza pizza?|Taliansko|Grécko|Španielsko|Francúzsko","Z akého mlieka sa vyrába bryndza?|Z ovčieho|Z kozieho|Z kravského|Z byvolieho","Čím sa typicky obaľujú rolky maki sushi?|Riasou nori|Šalátom|Palacinkou|Slaninou","Z čoho sa vyrába čokoláda?|Z kakaových bôbov|Z kávových zŕn|Z orechov|Z vanilky"]],
+["⚽ Šport",["Koľko hráčov má jeden futbalový tím na ihrisku?|11|9|10|12","Kde sa konali olympijské hry v roku 2016?|Rio de Janeiro|Londýn|Tokio|Peking","Kto vyhral majstrovstvá sveta vo futbale 2022?|Argentína|Francúzsko|Brazília|Chorvátsko","Koľko kruhov je na olympijskej vlajke?|5|4|6|7","Ktorý šport hrá Rafael Nadal?|Tenis|Golf|Squash|Stolný tenis"]],
+["🎬 Filmy a hudba",["Kto režíroval film Titanic?|James Cameron|Steven Spielberg|Ridley Scott|Christopher Nolan","V ktorom animovanom filme sa spieva pieseň Let It Go?|Ľadové kráľovstvo|Locika|Odvážna Vaiana|Rapunzel","Koľko strún má klasická gitara?|6|4|5|8","Kto napísal knihy o Harrym Potterovi?|J. K. Rowling|J. R. R. Tolkien|Roald Dahl|C. S. Lewis","Ktorý nástroj má čierne a biele klávesy?|Klavír|Husle|Flauta|Bubon"]],
+["🏛️ História",["V ktorom roku padol Berlínsky múr?|1989|1985|1987|1991","Kto objavil Ameriku v roku 1492?|Krištof Kolumbus|Vasco da Gama|Ferdinand Magalhães|Marco Polo","Ktorá krajina je domovom pyramíd v Gíze?|Egypt|Mexiko|Irak|Peru","Kto bol prvý človek na Mesiaci?|Neil Armstrong|Buzz Aldrin|Jurij Gagarin|John Glenn","V ktorom roku bola Nežná revolúcia?|1989|1968|1993|1948"]],
+["🔬 Veda a príroda",["Aký je chemický vzorec vody?|H2O|CO2|O2|NaCl","Ktorá planéta je najbližšie k Slnku?|Merkúr|Venuša|Mars|Zem","Koľko planét má Slnečná sústava?|8|7|9|10","Ktorý plyn tvorí najväčšiu časť vzduchu?|Dusík|Kyslík|Oxid uhličitý|Vodík","Pri akej teplote (°C) vrie voda pri hladine mora?|100|90|110|120"]],
+["🧩 Všeobecné",["Koľko mesiacov v roku má aspoň 28 dní?|12|1|2|6","Koľko dní má priestupný rok?|366|364|365|367","Koľko strán má šesťuholník?|6|5|7|8","Ktorý mesiac má 28 alebo 29 dní?|Február|Január|Marec|Apríl","Koľko minút je 2 a pol hodiny?|150|120|140|160"]],
+["💻 Technológie",["Kto založil firmu Microsoft?|Bill Gates|Steve Jobs|Mark Zuckerberg|Elon Musk","Čo znamená skratka WWW?|World Wide Web|Wide World Web|World Web Wide|Web World Wide","Ktorá firma vyrába iPhone?|Apple|Samsung|Google|Nokia","Ktorá hra je postavená z kociek a stavania?|Minecraft|Roblox|Fortnite|Tetris","Koľko bitov má jeden bajt?|8|4|16|32"]]
+];
+const BONUS=[["Aká je nadmorská výška Gerlachovského štítu (v metroch)?",2655],["Koľko kostí má dospelý človek?",206],["V ktorom roku bola dokončená Eiffelova veža?",1889],["Aká je priemerná vzdialenosť Zeme od Slnka (v miliónoch km)?",150],["Aký dlhý je rovník Zeme (v km)?",40075]];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+function getQ(r,qi){const t=TOPICS[2*r+(qi<5?0:1)];const p=t[1][qi%5].split("|");let seed=(r*10+qi+1)*7919,idx=[0,1,2,3];
+ for(let i=3;i>0;i--){seed=(seed*16807)%2147483647;const j=seed%(i+1);[idx[i],idx[j]]=[idx[j],idx[i]]}
+ return{topic:t[0],q:p[0],opts:idx.map(i=>({i,t:p[1+i]}))}}
+let db=false,uid,mode=null,S={ph:"lobby",r:0,qi:0},P={},me={name:"",a:{},g:{}},nameDraft="",guessDraft="",lastKey="",writing=Promise.resolve();
+function qDone(r,qi){if(r<S.r)return true;if(r>S.r)return false;if(["b","brev","score","final"].includes(S.ph))return true;if(S.ph==="lobby")return false;return qi<S.qi||(qi===S.qi&&S.ph==="rev")}
+function bDone(r){return r<S.r||(r===S.r&&["brev","score","final"].includes(S.ph))}
+function roundPts(p,r){let n=0;for(let q=0;q<10;q++)if(qDone(r,q)&&p.a&&p.a[r+"_"+q]===0)n++;
+ if(bDone(r)){const t=BONUS[r][1];let best=1e18;Object.values(P).forEach(x=>{if(x.g&&x.g[r]!=null)best=Math.min(best,Math.abs(x.g[r]-t))});
+  if(p.g&&p.g[r]!=null&&Math.abs(p.g[r]-t)===best)n++}return n}
+function total(p){let s=0;for(let r=0;r<5;r++)s+=roundPts(p,r);return s}
+function table(){const rows=Object.entries(P).map(([id,p])=>({id,p,tot:total(p)})).sort((a,b)=>b.tot-a.tot);
+ const rs=[0,1,2,3,4].filter(r=>bDone(r));
+ return`<div class="scroll"><table><tr><th>Hráč</th>${rs.map(r=>`<th>K${r+1}</th>`).join("")}<th>Spolu</th></tr>${rows.map(x=>`<tr><td>${esc(x.p.name)}${x.id===uid?" (ty)":""}</td>${rs.map(r=>`<td>${roundPts(x.p,r)}</td>`).join("")}<td class="tot">${x.tot}</td></tr>`).join("")}</table></div>`}
+function save(){try{localStorage.setItem("kviz_name",me.name)}catch(e){}writing=writing.then(()=>fbSet("players/"+uid,JSON.parse(JSON.stringify(me)))).catch(()=>{})}
+function setState(s){fbSet("game/state",s).catch(()=>{})}
+function next(){const{ph,r,qi}=S;
+ if(ph==="lobby")return setState({ph:"q",r:0,qi:0});
+ if(ph==="q")return setState({ph:"rev",r,qi});
+ if(ph==="rev")return setState(qi<9?{ph:"q",r,qi:qi+1}:{ph:"b",r,qi:9});
+ if(ph==="b")return setState({ph:"brev",r,qi:9});
+ if(ph==="brev")return setState({ph:"score",r,qi:9});
+ if(ph==="score")return setState(r<4?{ph:"q",r:r+1,qi:0}:{ph:"final",r,qi:9});
+ if(ph==="final"){Promise.all(Object.keys(P).map(id=>fbSet("players/"+id,null))).finally(()=>setState({ph:"lobby",r:0,qi:0}))}}
+const NEXTLBL={lobby:"▶ Začať kvíz",q:"Ukázať odpoveď",rev:"Ďalej",b:"Ukázať tip",brev:"Zobraziť tabuľku",score:"Ďalšie kolo",final:"Nová hra"};
+const L=["A","B","C","D"];
+function answeredCount(key){return Object.values(P).filter(p=>p.a&&p.a[key]!=null).length}
+function view(){const tv=mode==="tv";const{ph,r,qi}=S;const n=Object.keys(P).length;let h="";
+ const head=`<div class="bar"><h1>🧠 Rodinný kvíz</h1><span class="mu">${tv?"TV":esc(me.name)}</span></div>`;
+ if(ph==="lobby"){h=`<div class="card"><h2>Hráči (${n})</h2>${Object.values(P).map(p=>`<span class="pill">${esc(p.name)}</span>`).join("")||'<span class="mu">Zatiaľ nikto. Otvorte odkaz na telefónoch a pridajte sa.</span>'}<p class="mu">5 kôl × 10 otázok + bonusový tip v každom kole.</p></div>`}
+ else if(ph==="q"||ph==="rev"){const Q=getQ(r,qi),key=r+"_"+qi,mine=me.a[key];
+  h=`<div class="card"><div class="mu">Kolo ${r+1}/5 · Otázka ${qi+1}/10 · ${Q.topic}</div><div class="q">${esc(Q.q)}</div>`+
+  Q.opts.map((o,k)=>{let c="opt";if(ph==="rev"){if(o.i===0)c+=" ok";else if(!tv&&mine===o.i)c+=" bad"}else if(!tv&&mine===o.i)c+=" sel";
+   return`<button class="${c}" ${tv||ph==="rev"?"disabled":`onclick="ans('${key}',${o.i})"`}>${L[k]}. ${esc(o.t)}</button>`}).join("")+
+  (tv&&ph==="q"?`<p class="mu">Odpovedalo ${answeredCount(key)} z ${n}</p>`:"")+
+  (ph==="rev"?`<p>${tv?"Správne odpovedali: "+(Object.values(P).filter(p=>p.a[key]===0).map(p=>esc(p.name)).join(", ")||"nikto"):(mine===0?"✅ Správne!":mine==null?"Neodpovedal si.":"❌ Nesprávne.")}</p>`:"")+`</div>`}
+ else if(ph==="b"||ph==="brev"){const B=BONUS[r];
+  h=`<div class="card"><div class="mu">Kolo ${r+1} · Bonusová tipovačka</div><div class="q">${esc(B[0])}</div>`;
+  if(ph==="b"){if(tv)h+=`<p class="mu">Tipli ${Object.values(P).filter(p=>p.g&&p.g[r]!=null).length} z ${n}</p>`;
+   else h+=me.g[r]!=null?`<p>Tvoj tip: <b>${me.g[r]}</b> (môžeš ho zmeniť)</p>`:"",h+=`<input id="gi" type="number" inputmode="numeric" placeholder="Tvoj tip" value="${esc(guessDraft)}" oninput="guessDraft=this.value"><button class="btn" onclick="guess()">Odoslať tip</button>`}
+  else{const t=B[1];h+=`<p>Správne: <b>${t}</b></p>`+Object.values(P).filter(p=>p.g&&p.g[r]!=null).sort((a,b)=>Math.abs(a.g[r]-t)-Math.abs(b.g[r]-t)).map(p=>`<div>${esc(p.name)}: ${p.g[r]} <span class="mu">(rozdiel ${Math.abs(p.g[r]-t)})</span></div>`).join("")}
+  h+=`</div>`}
+ else if(ph==="score"||ph==="final"){h=`<div class="card"><h2>${ph==="final"?"🏆 Konečné poradie":"Tabuľka po "+(r+1)+". kole"}</h2>${table()}</div>`}
+ if(tv){h+=`<button class="btn" onclick="next()">${NEXTLBL[ph]}</button>`}
+ return head+h}
+function render(){const app=$("#app");
+ if(!db){app.innerHTML='<div class="card">Kvíz sa nevie pripojiť k Firebase. Skontroluj konfiguráciu v index.html (firebaseConfig) a pravidlá databázy podľa README.</div>';return}
+ if(!mode){app.innerHTML='<h1>🧠 Rodinný kvíz</h1><div class="card"><button class="btn" onclick="setMode(\'tv\')">📺 Toto je TV (hostiteľ)</button><button class="btn alt" onclick="setMode(\'player\')">📱 Som hráč</button><p class="mu">Hostiteľ je jeden telefón s otázkami premietaný na TV. Ostatní sa pripoja ako hráči.</p></div>';return}
+ if(mode==="player"&&!me.name){app.innerHTML='<h1>🧠 Rodinný kvíz</h1><div class="card"><h2>Ako sa voláš?</h2><input id="ni" placeholder="Tvoje meno" value="'+esc(nameDraft)+'" oninput="nameDraft=this.value"><button class="btn" onclick="join()">Pridať sa</button></div>';return}
+ const key=S.ph+S.r+S.qi+mode+me.name;if(document.activeElement&&document.activeElement.tagName==="INPUT"&&key===lastKey)return;lastKey=key;
+ document.body.className=mode==="tv"?"tv":"";app.innerHTML=view()}
+function setMode(m){mode=m;try{localStorage.setItem('kviz_mode',m)}catch(e){}render()}
+function join(){const v=nameDraft.trim();if(!v)return;me.name=v;save();render()}
+function ans(k,i){if(S.ph!=="q")return;me.a[k]=i;save();render()}
+function guess(){const v=parseFloat(guessDraft);if(isNaN(v)||S.ph!=="b")return;me.g[S.r]=v;guessDraft="";save();lastKey="";render()}
+function start(){db=true;try{uid=localStorage.getItem("kviz_uid");if(!uid){uid="p"+Math.random().toString(36).slice(2,10);localStorage.setItem("kviz_uid",uid)}
+ me.name=localStorage.getItem("kviz_name")||"";mode=localStorage.getItem("kviz_mode")||null}catch(e){uid="p"+Math.random().toString(36).slice(2,10)}
+ render();
+ fbListen("game/state",v=>{S=v||{ph:"lobby",r:0,qi:0};render()});
+ fbListen("players",v=>{P={};Object.entries(v||{}).forEach(([id,p])=>{p.a=p.a||{};p.g=p.g||{};P[id]=p});
+  if(mode==="player"&&me.name&&!P[uid]&&S.ph==="lobby"){me.a={};me.g={};save()}
+  render()})}
+render();
+</script><script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import{getDatabase,ref,set,onValue}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+// ===== SEM VLOŽ SVOJU FIREBASE KONFIGURÁCIU (pozri README.md) =====
+const firebaseConfig={
+  apiKey:"AIzaSyA_xeAYxMl1CncnQi8KPYeltg3HreN8vIw",
+  databaseURL:"https://rodinnykviz-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:"rodinnykviz"
+};
+// ==================================================================
+const room=(new URLSearchParams(location.search).get("room")||"rodina").replace(/[^a-z0-9_-]/gi,"")||"rodina";
+if(firebaseConfig.apiKey.startsWith("VLOZ")){render()}else{
+ const DB=getDatabase(initializeApp(firebaseConfig));const base="kviz/"+room+"/";
+ window.fbSet=(p,v)=>set(ref(DB,base+p),v);
+ window.fbListen=(p,cb)=>onValue(ref(DB,base+p),sn=>cb(sn.val()));
+ start();
+}
+</script>
+</body></html>
