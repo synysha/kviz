@@ -22,7 +22,7 @@ Kvíz pre rodinu: jeden telefón (premietaný na TV) ukazuje otázky, ostatní o
 
 ## Nahratie na GitHub Pages
 
-1. Vytvor repozitár a nahraj `index.html` (a tento README).
+1. Vytvor repozitár a nahraj všetky súbory z priečinka: `index.html`, `icon.svg`, `icon-192.png`, `icon-512.png`, `apple-touch-icon.png`, `manifest.webmanifest` a `README.md`.
 2. **Settings → Pages**: Source = *Deploy from a branch*, branch `main`, priečinok `/ (root)`.
 3. Po minúte bude kvíz na `https://<meno>.github.io/<repozitar>/`.
 
@@ -32,3 +32,9 @@ Kvíz pre rodinu: jeden telefón (premietaný na TV) ukazuje otázky, ostatní o
 - Viac samostatných hier naraz: pridaj `?room=nazov` k odkazu (predvolená miestnosť je `rodina`).
 - Hru ovláda TV tlačidlom dole. Po poslednom kole tlačidlo **Nová hra** vymaže hráčov a začne od nuly.
 - Otázky a bonusové tipy sú v poli `TOPICS` a `BONUS` na začiatku skriptu v `index.html`.
+
+## Karty a ikona
+
+- Dole sú tri karty: **Kvíz**, **Hodnotenie** (poradie, body po kolách) a **Nastavenia** (QR kód na pozvanie ďalšieho telefónu, zmena roly a mena, vynulovanie hry).
+- QR kód sa generuje knižnicou z cdnjs, takže treba internet.
+- Ikona kvízu je `icon.svg` (a PNG verzie). Na mobile ju získaš cez **Pridať na plochu**.

@@ -2,6 +2,11 @@
 <html lang="sk"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Rodinný kvíz</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#5b4bdb">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 :root{--bg:#f6f4ef;--card:#fff;--tx:#1d1d22;--mu:#6b6b76;--ac:#5b4bdb;--ok:#1f9d55;--bad:#d64545;--bd:#e3e0d8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17171c;--card:#23232b;--tx:#f1f1f4;--mu:#9a9aa8;--ac:#8a7dff;--ok:#3ec97a;--bad:#ff6b6b;--bd:#35353f;color-scheme:dark}}
@@ -25,6 +30,14 @@ table{width:100%;border-collapse:collapse}td,th{padding:9px 6px;border-bottom:1p
 .tot{font-weight:800}.pill{display:inline-block;padding:3px 10px;border-radius:99px;background:var(--bd);margin:2px;font-size:.85em}
 .bar{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .scroll{overflow-x:auto}
+body{padding-bottom:84px}
+#nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--card);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+#nav button{flex:1;font:inherit;font-size:.8em;background:none;border:0;color:var(--mu);padding:10px 4px 12px;cursor:pointer}
+#nav button b{display:block;font-size:1.6em;font-weight:400;line-height:1.2}
+#nav button.on{color:var(--ac);font-weight:700}
+#qr{display:inline-block;background:#fff;padding:12px;border-radius:12px;min-height:50px}
+.tv #nav button{font-size:1em}
+.row{display:flex;gap:8px;flex-wrap:wrap}.medal{font-size:1.2em}
 </style></head>
 <body><div id="app">Načítavam…</div>
 <script>
@@ -46,7 +59,7 @@ const esc=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[
 function getQ(r,qi){const t=TOPICS[2*r+(qi<5?0:1)];const p=t[1][qi%5].split("|");let seed=(r*10+qi+1)*7919,idx=[0,1,2,3];
  for(let i=3;i>0;i--){seed=(seed*16807)%2147483647;const j=seed%(i+1);[idx[i],idx[j]]=[idx[j],idx[i]]}
  return{topic:t[0],q:p[0],opts:idx.map(i=>({i,t:p[1+i]}))}}
-let db=false,uid,mode=null,S={ph:"lobby",r:0,qi:0},P={},me={name:"",a:{},g:{}},nameDraft="",guessDraft="",lastKey="",writing=Promise.resolve();
+let db=false,tab="quiz",uid,mode=null,S={ph:"lobby",r:0,qi:0},P={},me={name:"",a:{},g:{}},nameDraft="",guessDraft="",lastKey="",writing=Promise.resolve();
 function qDone(r,qi){if(r<S.r)return true;if(r>S.r)return false;if(["b","brev","score","final"].includes(S.ph))return true;if(S.ph==="lobby")return false;return qi<S.qi||(qi===S.qi&&S.ph==="rev")}
 function bDone(r){return r<S.r||(r===S.r&&["brev","score","final"].includes(S.ph))}
 function roundPts(p,r){let n=0;for(let q=0;q<10;q++)if(qDone(r,q)&&p.a&&p.a[r+"_"+q]===0)n++;
@@ -65,7 +78,7 @@ function next(){const{ph,r,qi}=S;
  if(ph==="b")return setState({ph:"brev",r,qi:9});
  if(ph==="brev")return setState({ph:"score",r,qi:9});
  if(ph==="score")return setState(r<4?{ph:"q",r:r+1,qi:0}:{ph:"final",r,qi:9});
- if(ph==="final"){Promise.all(Object.keys(P).map(id=>fbSet("players/"+id,null))).finally(()=>setState({ph:"lobby",r:0,qi:0}))}}
+ if(ph==="final")resetGame()}
 const NEXTLBL={lobby:"▶ Začať kvíz",q:"Ukázať odpoveď",rev:"Ďalej",b:"Ukázať tip",brev:"Zobraziť tabuľku",score:"Ďalšie kolo",final:"Nová hra"};
 const L=["A","B","C","D"];
 function answeredCount(key){return Object.values(P).filter(p=>p.a&&p.a[key]!=null).length}
@@ -91,9 +104,33 @@ function render(){const app=$("#app");
  if(!db){app.innerHTML='<div class="card">Kvíz sa nevie pripojiť k Firebase. Skontroluj konfiguráciu v index.html (firebaseConfig) a pravidlá databázy podľa README.</div>';return}
  if(!mode){app.innerHTML='<h1>🧠 Rodinný kvíz</h1><div class="card"><button class="btn" onclick="setMode(\'tv\')">📺 Toto je TV (hostiteľ)</button><button class="btn alt" onclick="setMode(\'player\')">📱 Som hráč</button><p class="mu">Hostiteľ je jeden telefón s otázkami premietaný na TV. Ostatní sa pripoja ako hráči.</p></div>';return}
  if(mode==="player"&&!me.name){app.innerHTML='<h1>🧠 Rodinný kvíz</h1><div class="card"><h2>Ako sa voláš?</h2><input id="ni" placeholder="Tvoje meno" value="'+esc(nameDraft)+'" oninput="nameDraft=this.value"><button class="btn" onclick="join()">Pridať sa</button></div>';return}
- const key=S.ph+S.r+S.qi+mode+me.name;if(document.activeElement&&document.activeElement.tagName==="INPUT"&&key===lastKey)return;lastKey=key;
- document.body.className=mode==="tv"?"tv":"";app.innerHTML=view()}
-function setMode(m){mode=m;try{localStorage.setItem('kviz_mode',m)}catch(e){}render()}
+ const key=S.ph+S.r+S.qi+mode+me.name+tab;if(document.activeElement&&document.activeElement.tagName==="INPUT"&&key===lastKey)return;lastKey=key;
+ document.body.className=mode==="tv"?"tv":"";app.innerHTML=(tab==="quiz"?view():tab==="rating"?ratingView():settingsView())+navHtml();if(tab==="settings")makeQR()}
+function setTab(t){tab=t;lastKey="";render();window.scrollTo(0,0)}
+function navHtml(){const T=[["quiz","❓","Kvíz"],["rating","🏆","Hodnotenie"],["settings","⚙️","Nastavenia"]];return`<nav id="nav">${T.map(t=>`<button class="${tab===t[0]?"on":""}" onclick="setTab('${t[0]}')"><b>${t[1]}</b>${t[2]}</button>`).join("")}</nav>`}
+function hdr(t){return`<div class="bar"><h1>${t}</h1><span class="mu">${mode==="tv"?"TV":esc(me.name)}</span></div>`}
+function ratingView(){const rows=Object.entries(P).map(([id,p])=>({id,p,tot:total(p)})).sort((a,b)=>b.tot-a.tot);
+ const medals=["🥇","🥈","🥉"];let h=hdr("🏆 Hodnotenie");
+ if(!rows.length)return h+'<div class="card mu">Zatiaľ sa nikto nepripojil.</div>';
+ h+=`<div class="card"><h2>Celkové poradie</h2><table>${rows.map((x,i)=>`<tr><td class="medal">${medals[i]||i+1+"."}</td><td>${esc(x.p.name)}${x.id===uid?" (ty)":""}</td><td class="tot">${x.tot}</td></tr>`).join("")}</table></div>`;
+ h+=`<div class="card"><h2>Body po kolách</h2>${table()}</div>`;
+ if(P[uid]){let ok=0,all=0;for(let r=0;r<5;r++)for(let q=0;q<10;q++)if(qDone(r,q)){all++;if(me.a[r+"_"+q]===0)ok++}
+  h+=`<div class="card"><h2>Tvoje výsledky</h2>Správne odpovede: <b>${ok}</b> z ${all}</div>`}
+ return h}
+function roomName(){return(new URLSearchParams(location.search).get("room")||"rodina").replace(/[^a-z0-9_-]/gi,"")||"rodina"}
+function shareUrl(){const r=roomName();return location.origin+location.pathname+(r!=="rodina"?"?room="+r:"")}
+function settingsView(){const u=shareUrl();
+ return hdr("⚙️ Nastavenia")+`<div class="card"><h2>Pozvať ďalší telefón</h2><p class="mu">Naskenuj QR kód fotoaparátom druhého mobilu.</p><div id="qr"></div><p class="mu" style="word-break:break-all">${esc(u)}</p><div class="row"><button class="btn alt" onclick="copyLink()">📋 Kopírovať odkaz</button>${navigator.share?'<button class="btn alt" onclick="shareLink()">📤 Zdieľať</button>':""}</div></div>`+
+ `<div class="card"><h2>Tento telefón</h2><div class="row"><button class="btn ${mode==="tv"?"":"alt"}" onclick="setMode('tv')">📺 TV (hostiteľ)</button><button class="btn ${mode==="player"?"":"alt"}" onclick="setMode('player')">📱 Hráč</button></div>`+
+ (mode==="player"?`<p class="mu">Meno hráča</p><input id="ni2" value="${esc(me.name)}" oninput="nameDraft=this.value"><button class="btn" onclick="rename()">Uložiť meno</button>`:"")+`</div>`+
+ `<div class="card"><h2>Miestnosť</h2><p>Kód: <b>${esc(roomName())}</b></p><p class="mu">Iná miestnosť = iná hra. Pridaj ?room=nazov k odkazu.</p>`+
+ (mode==="tv"?`<button class="btn alt" onclick="if(confirm('Vymazať hráčov a začať odznova?'))resetGame()">🔄 Vynulovať hru</button>`:"")+`</div>`}
+function makeQR(){const el=$("#qr");if(!el)return;el.innerHTML="";if(window.QRCode)new QRCode(el,{text:shareUrl(),width:220,height:220,colorDark:"#000000",colorLight:"#ffffff"});else el.textContent="QR knižnica sa nenačítala, použi odkaz nižšie."}
+function copyLink(){try{navigator.clipboard.writeText(shareUrl())}catch(e){}}
+function shareLink(){navigator.share({title:"Rodinný kvíz",url:shareUrl()}).catch(()=>{})}
+function rename(){const v=nameDraft.trim();if(!v)return;me.name=v;save();lastKey="";render()}
+function resetGame(){Promise.all(Object.keys(P).map(id=>fbSet("players/"+id,null))).finally(()=>setState({ph:"lobby",r:0,qi:0}))}
+function setMode(m){mode=m;try{localStorage.setItem('kviz_mode',m)}catch(e){}lastKey='';render()}
 function join(){const v=nameDraft.trim();if(!v)return;me.name=v;save();render()}
 function ans(k,i){if(S.ph!=="q")return;me.a[k]=i;save();render()}
 function guess(){const v=parseFloat(guessDraft);if(isNaN(v)||S.ph!=="b")return;me.g[S.r]=v;guessDraft="";save();lastKey="";render()}
