@@ -5,39 +5,46 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#5b4bdb">
+<meta name="theme-color" content="#16263d">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-:root{--bg:#f6f4ef;--card:#fff;--tx:#1d1d22;--mu:#6b6b76;--ac:#5b4bdb;--ok:#1f9d55;--bad:#d64545;--bd:#e3e0d8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17171c;--card:#23232b;--tx:#f1f1f4;--mu:#9a9aa8;--ac:#8a7dff;--ok:#3ec97a;--bad:#ff6b6b;--bd:#35353f;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#17171c;--card:#23232b;--tx:#f1f1f4;--mu:#9a9aa8;--ac:#8a7dff;--ok:#3ec97a;--bad:#ff6b6b;--bd:#35353f;color-scheme:dark}
+:root{--bg:#eaf0f7;--bg2:#dde6f1;--card:#fff;--tx:#14233a;--mu:#5d6c84;--ac:#8c6a4f;--acT:#fff;--ok:#1d8a6a;--bad:#c94a4a;--bd:#d5dfec;--sel:#1f4f55;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1b2d;--bg2:#08111f;--card:#16263d;--tx:#eef1f6;--mu:#93a1b8;--ac:#c4a484;--acT:#1b1410;--ok:#3fb68b;--bad:#e26d6d;--bd:#2a3d5a;--sel:#1f5a60;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1b2d;--bg2:#08111f;--card:#16263d;--tx:#eef1f6;--mu:#93a1b8;--ac:#c4a484;--acT:#1b1410;--ok:#3fb68b;--bad:#e26d6d;--bd:#2a3d5a;--sel:#1f5a60;color-scheme:dark}
 *{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh}
-#app{max-width:760px;margin:0 auto;padding:16px}
-.tv #app{max-width:1100px;font-size:1.35em}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;margin:12px 0}
-h1{font-size:1.5em;margin:.2em 0}h2{margin:.2em 0 .5em}
+body{margin:0;background:var(--bg);background-image:linear-gradient(180deg,var(--bg),var(--bg2));background-attachment:fixed;color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;padding-bottom:84px}
+#app{max-width:820px;margin:0 auto;padding:14px}
+.tv #app{max-width:1200px;font-size:clamp(13px,2.4vmin,30px)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:16px;margin:10px 0;box-shadow:0 6px 20px rgba(0,0,0,.12)}
+h1,h2,.q{font-family:"Cormorant Garamond",Georgia,"Times New Roman",serif}
+h1.brand{font-size:1.15em;letter-spacing:.16em;text-transform:uppercase;margin:.2em 0;font-weight:700}
+h2{font-size:1.4em;margin:.1em 0 .4em}
 .mu{color:var(--mu);font-size:.85em}
-.q{font-size:1.35em;font-weight:650;margin:.3em 0 .8em}
-.opt{display:block;width:100%;text-align:left;font:inherit;padding:14px 16px;margin:8px 0;border-radius:12px;border:2px solid var(--bd);background:var(--card);color:var(--tx);cursor:pointer}
-.opt.sel{border-color:var(--ac);background:color-mix(in srgb,var(--ac) 14%,var(--card))}
-.opt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 18%,var(--card))}
-.opt.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,var(--card))}
-.btn{font:inherit;font-weight:650;padding:13px 20px;border:0;border-radius:12px;background:var(--ac);color:#fff;cursor:pointer;margin:6px 6px 6px 0}
-.btn.alt{background:var(--card);color:var(--tx);border:2px solid var(--bd)}
-input{font:inherit;padding:13px;border-radius:12px;border:2px solid var(--bd);background:var(--card);color:var(--tx);width:100%;margin:6px 0}
+.q{font-size:1.65em;font-weight:700;line-height:1.15;margin:.3em 0 .6em}
+.prog{height:6px;background:var(--bd);border-radius:9px;overflow:hidden;margin-bottom:10px}.prog i{display:block;height:100%;background:var(--ac)}
+.opt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;font:inherit;padding:12px 14px;margin:7px 0;border-radius:14px;border:1.5px solid var(--bd);background:var(--card);color:var(--tx);cursor:pointer}
+.opt:disabled{color:var(--tx);opacity:1}.opt .l{opacity:.55;font-weight:700}.opt .t{flex:1}
+.opt.sel{background:var(--sel);border-color:var(--sel);color:#fff}.opt.sel::after{content:"✓"}
+.opt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 22%,var(--card))}.opt.ok::after{content:"✓";color:var(--ok)}
+.opt.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 16%,var(--card))}
+.btn{font:inherit;font-weight:650;padding:13px 20px;border:0;border-radius:12px;background:linear-gradient(180deg,color-mix(in srgb,var(--ac) 80%,#fff),var(--ac));color:var(--acT);cursor:pointer;margin:6px 6px 6px 0}
+.btn.alt{background:var(--card);color:var(--tx);border:1.5px solid var(--bd)}
+input{font:inherit;padding:13px;border-radius:12px;border:1.5px solid var(--bd);background:var(--card);color:var(--tx);width:100%;margin:6px 0}
 table{width:100%;border-collapse:collapse}td,th{padding:9px 6px;border-bottom:1px solid var(--bd);text-align:center}td:first-child,th:first-child{text-align:left}
-.tot{font-weight:800}.pill{display:inline-block;padding:3px 10px;border-radius:99px;background:var(--bd);margin:2px;font-size:.85em}
-.bar{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.scroll{overflow-x:auto}
-body{padding-bottom:84px}
+.tot{font-weight:800}.pill{display:inline-block;padding:4px 12px;border-radius:99px;background:var(--bd);margin:2px;font-size:.9em}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:8px}.scroll{overflow-x:auto}.row{display:flex;gap:8px;flex-wrap:wrap}.medal{font-size:1.2em}
 #nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--card);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
 #nav button{flex:1;font:inherit;font-size:.8em;background:none;border:0;color:var(--mu);padding:10px 4px 12px;cursor:pointer}
-#nav button b{display:block;font-size:1.6em;font-weight:400;line-height:1.2}
-#nav button.on{color:var(--ac);font-weight:700}
+#nav button b{display:block;font-size:1.6em;font-weight:400;line-height:1.2}#nav button.on{color:var(--ac);font-weight:700}
 #qr{display:inline-block;background:#fff;padding:12px;border-radius:12px;min-height:50px}
-.tv #nav button{font-size:1em}
-.row{display:flex;gap:8px;flex-wrap:wrap}.medal{font-size:1.2em}
+.ring{width:110px;height:110px;border-radius:50%;background:conic-gradient(var(--ac) calc(var(--p)*1%),var(--bd) 0);display:grid;place-items:center;margin:8px auto}.ring span{background:var(--card);width:84px;height:84px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:1.3em}
+.cats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:8px}
+.cat{border-radius:14px;padding:12px;min-height:84px;display:flex;flex-direction:column;justify-content:space-between;color:#fff;font-weight:700;background:linear-gradient(145deg,var(--c1),var(--c2));text-shadow:0 1px 3px rgba(0,0,0,.45)}.cat i{font-style:normal;font-size:1.8em}
+.avs{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:8px 0}.av{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:2px solid transparent;border-radius:14px;padding:6px 2px;cursor:pointer;color:var(--tx);font:inherit;font-size:.8em}.av img{width:100%;max-width:64px;aspect-ratio:1;border-radius:50%}.av.on{border-color:var(--ac);background:color-mix(in srgb,var(--ac) 22%,var(--card))}
+.ava{width:1.5em;height:1.5em;border-radius:50%;vertical-align:-.4em;object-fit:cover}
+@media(orientation:landscape){.qgrid{display:grid;grid-template-columns:1fr 1.1fr;gap:16px;align-items:center}.qgrid .q{margin-top:.1em}.cats{grid-template-columns:repeat(5,1fr)}}
+@media(orientation:landscape) and (max-height:520px){body{padding-bottom:44px}#app{padding:6px 10px}.bar{display:none}.card{padding:10px;margin:6px 0}.q{font-size:1.3em;margin:.1em 0 .3em}.opt{padding:7px 11px;margin:4px 0;font-size:.95em}h2{font-size:1.15em}.btn{padding:9px 14px;margin:4px 6px 4px 0}.mu{font-size:.8em}.cat{min-height:60px;padding:8px}.prog{margin-bottom:6px}#nav button{display:flex;justify-content:center;align-items:center;gap:6px;padding:6px 4px}#nav button b{display:inline;font-size:1.2em}}
 </style></head>
 <body><div id="app">Načítavam…</div>
 <script>
@@ -55,11 +62,14 @@ const TOPICS=[
 ];
 const BONUS=[["Aká je nadmorská výška Gerlachovského štítu (v metroch)?",2655],["Koľko kostí má dospelý človek?",206],["V ktorom roku bola dokončená Eiffelova veža?",1889],["Aká je priemerná vzdialenosť Zeme od Slnka (v miliónoch km)?",150],["Aký dlhý je rovník Zeme (v km)?",40075]];
 const $=s=>document.querySelector(s);
+const avh=a=>AVS.some(x=>x[0]===a)?`<img class="ava" src="avatars/${a}.png" alt="">`:(a||'🙂');
+const nm=p=>avh(p.av)+' '+esc(p.name);
 const esc=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
 function getQ(r,qi){const t=TOPICS[2*r+(qi<5?0:1)];const p=t[1][qi%5].split("|");let seed=(r*10+qi+1)*7919,idx=[0,1,2,3];
  for(let i=3;i>0;i--){seed=(seed*16807)%2147483647;const j=seed%(i+1);[idx[i],idx[j]]=[idx[j],idx[i]]}
  return{topic:t[0],q:p[0],opts:idx.map(i=>({i,t:p[1+i]}))}}
-let db=false,tab="quiz",uid,mode=null,S={ph:"lobby",r:0,qi:0},P={},me={name:"",a:{},g:{}},nameDraft="",guessDraft="",lastKey="",writing=Promise.resolve();
+const AVS=[['nova','Nova'],['leo','Leo'],['mia','Mia'],['sam','Sam'],['chloe','Chloe'],['tom','Tom'],['zoe','Zoe'],['max','Max'],['ivy','Ivy'],['dave','Dave']],CC=[['#6b4a35','#3e2a1d'],['#7d7f86','#4b4d55'],['#a58a5c','#6d5632'],['#b05a3c','#702f1d'],['#2f7d55','#1a4a31'],['#6b3f7a','#3a2145'],['#8a7355','#554530'],['#2f6f8f','#1b4259'],['#9a6a2a','#5e3d13'],['#4a6a80','#2a3f4f']];
+let avDraft='nova',db=false,tab="quiz",uid,mode=null,S={ph:"lobby",r:0,qi:0},P={},me={name:"",a:{},g:{}},nameDraft="",guessDraft="",lastKey="",writing=Promise.resolve();
 function qDone(r,qi){if(r<S.r)return true;if(r>S.r)return false;if(["b","brev","score","final"].includes(S.ph))return true;if(S.ph==="lobby")return false;return qi<S.qi||(qi===S.qi&&S.ph==="rev")}
 function bDone(r){return r<S.r||(r===S.r&&["brev","score","final"].includes(S.ph))}
 function roundPts(p,r){let n=0;for(let q=0;q<10;q++)if(qDone(r,q)&&p.a&&p.a[r+"_"+q]===0)n++;
@@ -68,7 +78,7 @@ function roundPts(p,r){let n=0;for(let q=0;q<10;q++)if(qDone(r,q)&&p.a&&p.a[r+"_
 function total(p){let s=0;for(let r=0;r<5;r++)s+=roundPts(p,r);return s}
 function table(){const rows=Object.entries(P).map(([id,p])=>({id,p,tot:total(p)})).sort((a,b)=>b.tot-a.tot);
  const rs=[0,1,2,3,4].filter(r=>bDone(r));
- return`<div class="scroll"><table><tr><th>Hráč</th>${rs.map(r=>`<th>K${r+1}</th>`).join("")}<th>Spolu</th></tr>${rows.map(x=>`<tr><td>${esc(x.p.name)}${x.id===uid?" (ty)":""}</td>${rs.map(r=>`<td>${roundPts(x.p,r)}</td>`).join("")}<td class="tot">${x.tot}</td></tr>`).join("")}</table></div>`}
+ return`<div class="scroll"><table><tr><th>Hráč</th>${rs.map(r=>`<th>K${r+1}</th>`).join("")}<th>Spolu</th></tr>${rows.map(x=>`<tr><td>${nm(x.p)}${x.id===uid?" (ty)":""}</td>${rs.map(r=>`<td>${roundPts(x.p,r)}</td>`).join("")}<td class="tot">${x.tot}</td></tr>`).join("")}</table></div>`}
 function save(){try{localStorage.setItem("kviz_name",me.name)}catch(e){}writing=writing.then(()=>fbSet("players/"+uid,JSON.parse(JSON.stringify(me)))).catch(()=>{})}
 function setState(s){fbSet("game/state",s).catch(()=>{})}
 function next(){const{ph,r,qi}=S;
@@ -83,46 +93,48 @@ const NEXTLBL={lobby:"▶ Začať kvíz",q:"Ukázať odpoveď",rev:"Ďalej",b:"U
 const L=["A","B","C","D"];
 function answeredCount(key){return Object.values(P).filter(p=>p.a&&p.a[key]!=null).length}
 function view(){const tv=mode==="tv";const{ph,r,qi}=S;const n=Object.keys(P).length;let h="";
- const head=`<div class="bar"><h1>🧠 Rodinný kvíz</h1><span class="mu">${tv?"TV":esc(me.name)}</span></div>`;
- if(ph==="lobby"){h=`<div class="card"><h2>Hráči (${n})</h2>${Object.values(P).map(p=>`<span class="pill">${esc(p.name)}</span>`).join("")||'<span class="mu">Zatiaľ nikto. Otvorte odkaz na telefónoch a pridajte sa.</span>'}<p class="mu">5 kôl × 10 otázok + bonusový tip v každom kole.</p></div>`}
+ const head=`<div class="bar"><h1 class="brand">Rodinný kvíz</h1><span class="mu">${tv?"TV":nm(me)}</span></div>`;
+ if(ph==="lobby"){h=`<div class="card"><h2>Hráči (${n})</h2>${Object.values(P).map(p=>`<span class="pill">${nm(p)}</span>`).join("")||'<span class="mu">Zatiaľ nikto. Otvorte odkaz na telefónoch a pridajte sa.</span>'}<p class="mu">5 kôl × 10 otázok + bonusový tip v každom kole.</p></div><div class="card"><h2>Kategórie</h2><div class="cats">${TOPICS.map((t,k)=>{const sp=t[0].indexOf(" ");return`<div class="cat" style="--c1:${CC[k][0]};--c2:${CC[k][1]}"><i>${t[0].slice(0,sp)}</i>${esc(t[0].slice(sp+1))}</div>`}).join("")}</div></div>`}
  else if(ph==="q"||ph==="rev"){const Q=getQ(r,qi),key=r+"_"+qi,mine=me.a[key];
-  h=`<div class="card"><div class="mu">Kolo ${r+1}/5 · Otázka ${qi+1}/10 · ${Q.topic}</div><div class="q">${esc(Q.q)}</div>`+
-  Q.opts.map((o,k)=>{let c="opt";if(ph==="rev"){if(o.i===0)c+=" ok";else if(!tv&&mine===o.i)c+=" bad"}else if(!tv&&mine===o.i)c+=" sel";
-   return`<button class="${c}" ${tv||ph==="rev"?"disabled":`onclick="ans('${key}',${o.i})"`}>${L[k]}. ${esc(o.t)}</button>`}).join("")+
-  (tv&&ph==="q"?`<p class="mu">Odpovedalo ${answeredCount(key)} z ${n}</p>`:"")+
-  (ph==="rev"?`<p>${tv?"Správne odpovedali: "+(Object.values(P).filter(p=>p.a[key]===0).map(p=>esc(p.name)).join(", ")||"nikto"):(mine===0?"✅ Správne!":mine==null?"Neodpovedal si.":"❌ Nesprávne.")}</p>`:"")+`</div>`}
+  const optsH=Q.opts.map((o,k)=>{let c="opt";if(ph==="rev"){if(o.i===0)c+=" ok";else if(!tv&&mine===o.i)c+=" bad"}else if(!tv&&mine===o.i)c+=" sel";
+   return`<button class="${c}" ${tv||ph==="rev"?"disabled":`onclick="ans('${key}',${o.i})"`}><span class="l">${L[k]}.</span><span class="t">${esc(o.t)}</span></button>`}).join("");
+  const info=(tv&&ph==="q"?`<p class="mu">Odpovedalo ${answeredCount(key)} z ${n}</p>`:"")+(ph==="rev"?`<p>${tv?"Správne odpovedali: "+(Object.values(P).filter(p=>p.a[key]===0).map(p=>nm(p)).join(", ")||"nikto"):(mine===0?"✅ Správne!":mine==null?"Neodpovedal si.":"❌ Nesprávne.")}</p>`:"");
+  h=`<div class="card"><div class="prog"><i style="width:${(r*10+qi+1)*2}%"></i></div><div class="mu">Kolo ${r+1}/5 · Otázka ${qi+1}/10 · ${Q.topic}</div><div class="qgrid"><div><div class="q">${esc(Q.q)}</div>${info}</div><div>${optsH}</div></div></div>`}
  else if(ph==="b"||ph==="brev"){const B=BONUS[r];
   h=`<div class="card"><div class="mu">Kolo ${r+1} · Bonusová tipovačka</div><div class="q">${esc(B[0])}</div>`;
   if(ph==="b"){if(tv)h+=`<p class="mu">Tipli ${Object.values(P).filter(p=>p.g&&p.g[r]!=null).length} z ${n}</p>`;
    else h+=me.g[r]!=null?`<p>Tvoj tip: <b>${me.g[r]}</b> (môžeš ho zmeniť)</p>`:"",h+=`<input id="gi" type="number" inputmode="numeric" placeholder="Tvoj tip" value="${esc(guessDraft)}" oninput="guessDraft=this.value"><button class="btn" onclick="guess()">Odoslať tip</button>`}
-  else{const t=B[1];h+=`<p>Správne: <b>${t}</b></p>`+Object.values(P).filter(p=>p.g&&p.g[r]!=null).sort((a,b)=>Math.abs(a.g[r]-t)-Math.abs(b.g[r]-t)).map(p=>`<div>${esc(p.name)}: ${p.g[r]} <span class="mu">(rozdiel ${Math.abs(p.g[r]-t)})</span></div>`).join("")}
+  else{const t=B[1];h+=`<p>Správne: <b>${t}</b></p>`+Object.values(P).filter(p=>p.g&&p.g[r]!=null).sort((a,b)=>Math.abs(a.g[r]-t)-Math.abs(b.g[r]-t)).map(p=>`<div>${nm(p)}: ${p.g[r]} <span class="mu">(rozdiel ${Math.abs(p.g[r]-t)})</span></div>`).join("")}
   h+=`</div>`}
  else if(ph==="score"||ph==="final"){h=`<div class="card"><h2>${ph==="final"?"🏆 Konečné poradie":"Tabuľka po "+(r+1)+". kole"}</h2>${table()}</div>`}
  if(tv){h+=`<button class="btn" onclick="next()">${NEXTLBL[ph]}</button>`}
  return head+h}
 function render(){const app=$("#app");
  if(!db){app.innerHTML='<div class="card">Kvíz sa nevie pripojiť k Firebase. Skontroluj konfiguráciu v index.html (firebaseConfig) a pravidlá databázy podľa README.</div>';return}
- if(!mode){app.innerHTML='<h1>🧠 Rodinný kvíz</h1><div class="card"><button class="btn" onclick="setMode(\'tv\')">📺 Toto je TV (hostiteľ)</button><button class="btn alt" onclick="setMode(\'player\')">📱 Som hráč</button><p class="mu">Hostiteľ je jeden telefón s otázkami premietaný na TV. Ostatní sa pripoja ako hráči.</p></div>';return}
- if(mode==="player"&&!me.name){app.innerHTML='<h1>🧠 Rodinný kvíz</h1><div class="card"><h2>Ako sa voláš?</h2><input id="ni" placeholder="Tvoje meno" value="'+esc(nameDraft)+'" oninput="nameDraft=this.value"><button class="btn" onclick="join()">Pridať sa</button></div>';return}
+ if(!mode){app.innerHTML='<h1 class="brand">Rodinný kvíz</h1><div class="card"><button class="btn" onclick="setMode(\'tv\')">📺 Toto je TV (hostiteľ)</button><button class="btn alt" onclick="setMode(\'player\')">📱 Som hráč</button><p class="mu">Hostiteľ je jeden telefón s otázkami premietaný na TV. Ostatní sa pripoja ako hráči.</p></div>';return}
+ if(mode==="player"&&!me.name){app.innerHTML='<h1 class="brand">Rodinný kvíz</h1>'+profileCard(true);return}
  const key=S.ph+S.r+S.qi+mode+me.name+tab;if(document.activeElement&&document.activeElement.tagName==="INPUT"&&key===lastKey)return;lastKey=key;
- document.body.className=mode==="tv"?"tv":"";app.innerHTML=(tab==="quiz"?view():tab==="rating"?ratingView():settingsView())+navHtml();if(tab==="settings")makeQR()}
+ document.body.className=mode==="tv"?"tv":"";app.innerHTML=(tab==="quiz"?view():tab==="rating"?ratingView():tab==="profile"?hdr("👤 Profil")+profileCard(false):settingsView())+navHtml();if(tab==="settings")makeQR()}
+function profileCard(first){return`<div class="card"><h2>${first?"Vytvor si profil":"Tvoj profil"}</h2><p class="mu">Vyber si obrázok a napíš svoje meno. Uložia sa v tomto telefóne a ostanú aj pre ďalšie hry.</p><div class="avs">${AVS.map(([id,n])=>`<button class="av ${id===avDraft?"on":""}" onclick="pickAv('${id}')"><img src="avatars/${id}.png" alt=""></button>`).join("")}</div><input id="ni" placeholder="Napíš svoje meno" value="${esc(nameDraft)}" oninput="nameDraft=this.value"><button class="btn" onclick="saveProfile()">${first?"Pridať sa":"Uložiť profil"}</button></div>`}
+function pickAv(a){avDraft=a;lastKey="";render()}
+function saveProfile(){const v=nameDraft.trim();if(!v)return;me.name=v;me.av=avDraft;try{localStorage.setItem("kviz_av",avDraft)}catch(e){}save();lastKey="";render()}
 function setTab(t){tab=t;lastKey="";render();window.scrollTo(0,0)}
-function navHtml(){const T=[["quiz","❓","Kvíz"],["rating","🏆","Hodnotenie"],["settings","⚙️","Nastavenia"]];return`<nav id="nav">${T.map(t=>`<button class="${tab===t[0]?"on":""}" onclick="setTab('${t[0]}')"><b>${t[1]}</b>${t[2]}</button>`).join("")}</nav>`}
-function hdr(t){return`<div class="bar"><h1>${t}</h1><span class="mu">${mode==="tv"?"TV":esc(me.name)}</span></div>`}
+function navHtml(){const T=[["quiz","❓","Kvíz"],["rating","🏆","Hodnotenie"]].concat(mode==="player"?[["profile","👤","Profil"]]:[],[["settings","⚙️","Nastavenia"]]);return`<nav id="nav">${T.map(t=>`<button class="${tab===t[0]?"on":""}" onclick="setTab('${t[0]}')"><b>${t[1]}</b>${t[2]}</button>`).join("")}</nav>`}
+function hdr(t){return`<div class="bar"><h1 class="brand">${t}</h1><span class="mu">${mode==="tv"?"TV":nm(me)}</span></div>`}
 function ratingView(){const rows=Object.entries(P).map(([id,p])=>({id,p,tot:total(p)})).sort((a,b)=>b.tot-a.tot);
  const medals=["🥇","🥈","🥉"];let h=hdr("🏆 Hodnotenie");
  if(!rows.length)return h+'<div class="card mu">Zatiaľ sa nikto nepripojil.</div>';
- h+=`<div class="card"><h2>Celkové poradie</h2><table>${rows.map((x,i)=>`<tr><td class="medal">${medals[i]||i+1+"."}</td><td>${esc(x.p.name)}${x.id===uid?" (ty)":""}</td><td class="tot">${x.tot}</td></tr>`).join("")}</table></div>`;
+ h+=`<div class="card"><h2>Celkové poradie</h2><table>${rows.map((x,i)=>`<tr><td class="medal">${medals[i]||i+1+"."}</td><td>${nm(x.p)}${x.id===uid?" (ty)":""}</td><td class="tot">${x.tot}</td></tr>`).join("")}</table></div>`;
  h+=`<div class="card"><h2>Body po kolách</h2>${table()}</div>`;
  if(P[uid]){let ok=0,all=0;for(let r=0;r<5;r++)for(let q=0;q<10;q++)if(qDone(r,q)){all++;if(me.a[r+"_"+q]===0)ok++}
-  h+=`<div class="card"><h2>Tvoje výsledky</h2>Správne odpovede: <b>${ok}</b> z ${all}</div>`}
+  h+=`<div class="card"><h2>Tvoje výsledky</h2><div class="ring" style="--p:${all?ok/all*100:0}"><span>${ok}/${all}</span></div><p class="mu" style="text-align:center">správnych odpovedí</p></div>`}
  return h}
 function roomName(){return(new URLSearchParams(location.search).get("room")||"rodina").replace(/[^a-z0-9_-]/gi,"")||"rodina"}
 function shareUrl(){const r=roomName();return location.origin+location.pathname+(r!=="rodina"?"?room="+r:"")}
 function settingsView(){const u=shareUrl();
  return hdr("⚙️ Nastavenia")+`<div class="card"><h2>Pozvať ďalší telefón</h2><p class="mu">Naskenuj QR kód fotoaparátom druhého mobilu.</p><div id="qr"></div><p class="mu" style="word-break:break-all">${esc(u)}</p><div class="row"><button class="btn alt" onclick="copyLink()">📋 Kopírovať odkaz</button>${navigator.share?'<button class="btn alt" onclick="shareLink()">📤 Zdieľať</button>':""}</div></div>`+
  `<div class="card"><h2>Tento telefón</h2><div class="row"><button class="btn ${mode==="tv"?"":"alt"}" onclick="setMode('tv')">📺 TV (hostiteľ)</button><button class="btn ${mode==="player"?"":"alt"}" onclick="setMode('player')">📱 Hráč</button></div>`+
- (mode==="player"?`<p class="mu">Meno hráča</p><input id="ni2" value="${esc(me.name)}" oninput="nameDraft=this.value"><button class="btn" onclick="rename()">Uložiť meno</button>`:"")+`</div>`+
+ (mode==="player"?`<p class="mu">Meno a avatar zmeníš na karte Profil.</p>`:"")+`</div>`+
  `<div class="card"><h2>Miestnosť</h2><p>Kód: <b>${esc(roomName())}</b></p><p class="mu">Iná miestnosť = iná hra. Pridaj ?room=nazov k odkazu.</p>`+
  (mode==="tv"?`<button class="btn alt" onclick="if(confirm('Vymazať hráčov a začať odznova?'))resetGame()">🔄 Vynulovať hru</button>`:"")+`</div>`}
 function makeQR(){const el=$("#qr");if(!el)return;el.innerHTML="";if(window.QRCode)new QRCode(el,{text:shareUrl(),width:220,height:220,colorDark:"#000000",colorLight:"#ffffff"});else el.textContent="QR knižnica sa nenačítala, použi odkaz nižšie."}
@@ -130,12 +142,12 @@ function copyLink(){try{navigator.clipboard.writeText(shareUrl())}catch(e){}}
 function shareLink(){navigator.share({title:"Rodinný kvíz",url:shareUrl()}).catch(()=>{})}
 function rename(){const v=nameDraft.trim();if(!v)return;me.name=v;save();lastKey="";render()}
 function resetGame(){Promise.all(Object.keys(P).map(id=>fbSet("players/"+id,null))).finally(()=>setState({ph:"lobby",r:0,qi:0}))}
-function setMode(m){mode=m;try{localStorage.setItem('kviz_mode',m)}catch(e){}lastKey='';render()}
+function setMode(m){mode=m;if(m==='tv'&&tab==='profile')tab='quiz';try{localStorage.setItem('kviz_mode',m)}catch(e){}lastKey='';render()}
 function join(){const v=nameDraft.trim();if(!v)return;me.name=v;save();render()}
 function ans(k,i){if(S.ph!=="q")return;me.a[k]=i;save();render()}
 function guess(){const v=parseFloat(guessDraft);if(isNaN(v)||S.ph!=="b")return;me.g[S.r]=v;guessDraft="";save();lastKey="";render()}
 function start(){db=true;try{uid=localStorage.getItem("kviz_uid");if(!uid){uid="p"+Math.random().toString(36).slice(2,10);localStorage.setItem("kviz_uid",uid)}
- me.name=localStorage.getItem("kviz_name")||"";mode=localStorage.getItem("kviz_mode")||null}catch(e){uid="p"+Math.random().toString(36).slice(2,10)}
+ me.name=localStorage.getItem("kviz_name")||"";nameDraft=me.name;avDraft=localStorage.getItem("kviz_av");if(!AVS.some(x=>x[0]===avDraft))avDraft=AVS[0][0];me.av=avDraft;mode=localStorage.getItem("kviz_mode")||null}catch(e){uid="p"+Math.random().toString(36).slice(2,10)}
  render();
  fbListen("game/state",v=>{S=v||{ph:"lobby",r:0,qi:0};render()});
  fbListen("players",v=>{P={};Object.entries(v||{}).forEach(([id,p])=>{p.a=p.a||{};p.g=p.g||{};P[id]=p});
