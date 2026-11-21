@@ -38,3 +38,9 @@ Kvíz pre rodinu: jeden telefón (premietaný na TV) ukazuje otázky, ostatní o
 - Dole sú karty: **Kvíz**, **Hodnotenie** (poradie, body po kolách), **Profil** (meno a avatar, uložené v telefóne; na TV sa nezobrazuje) a **Nastavenia** (QR kód na pozvanie ďalšieho telefónu, zmena roly a mena, vynulovanie hry).
 - QR kód sa generuje knižnicou z cdnjs, takže treba internet.
 - Ikona kvízu je `icon.svg` (a PNG verzie). Na mobile ju získaš cez **Pridať na plochu**.
+
+## Otázky
+
+- Všetky otázky sú v `otazky.js`. Formát: `Text otázky|správna odpoveď|zlá 1|zlá 2|zlá 3`.
+- Pri štarte hry sa vyžrebuje 10 tém, z každej 5 otázok a 5 bonusových tipov. Appka si na hostiteľskom telefóne pamätá, čo už padlo, a pri ďalších hrách uprednostní nové.
+- Téma „Počty“ generuje príklady automaticky, takže tam sa otázky nikdy neopakujú.

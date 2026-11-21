@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="sk"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Rodinný kvíz</title>
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#16263d">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<script src="otazky.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 :root{--bg:#eaf0f7;--bg2:#dde6f1;--card:#fff;--tx:#14233a;--mu:#5d6c84;--ac:#8c6a4f;--acT:#fff;--ok:#1d8a6a;--bad:#c94a4a;--bd:#d5dfec;--sel:#1f4f55;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1b2d;--bg2:#08111f;--card:#16263d;--tx:#eef1f6;--mu:#93a1b8;--ac:#c4a484;--acT:#1b1410;--ok:#3fb68b;--bad:#e26d6d;--bd:#2a3d5a;--sel:#1f5a60;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#0f1b2d;--bg2:#08111f;--card:#16263d;--tx:#eef1f6;--mu:#93a1b8;--ac:#c4a484;--acT:#1b1410;--ok:#3fb68b;--bad:#e26d6d;--bd:#2a3d5a;--sel:#1f5a60;color-scheme:dark}
-*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}html{touch-action:manipulation}html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);background-image:linear-gradient(180deg,var(--bg),var(--bg2));background-attachment:fixed;color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;padding-bottom:84px}
 #app{max-width:820px;margin:0 auto;padding:14px}
 .tv #app{max-width:1200px;font-size:clamp(13px,2.4vmin,30px)}
@@ -48,41 +49,29 @@ table{width:100%;border-collapse:collapse}td,th{padding:9px 6px;border-bottom:1p
 </style></head>
 <body><div id="app">Načítavam…</div>
 <script>
-const TOPICS=[
-["🇸🇰 Slovensko",["Ktorý je najvyšší vrch Slovenska?|Gerlachovský štít|Lomnický štít|Kriváň|Rysy","Ktorá rieka je najdlhšia na Slovensku?|Váh|Hron|Hornád|Nitra","Ktoré mesto je druhé najväčšie na Slovensku?|Košice|Prešov|Nitra|Žilina","V ktorom roku vznikla samostatná Slovenská republika?|1993|1991|1992|1994","Ktoré pleso je najväčšie vo Vysokých Tatrách?|Veľké Hincovo pleso|Štrbské pleso|Popradské pleso|Skalnaté pleso"]],
-["🌍 Zemepis",["Ktorý oceán je najväčší?|Tichý|Atlantický|Indický|Severný ľadový","Aké je hlavné mesto Austrálie?|Canberra|Sydney|Melbourne|Perth","Ktorý kontinent má najviac obyvateľov?|Ázia|Afrika|Európa|Severná Amerika","Aké je hlavné mesto Kanady?|Ottawa|Toronto|Montreal|Vancouver","Ktorá hora je najvyššia na svete?|Mount Everest|K2|Kilimandžáro|Mont Blanc"]],
-["🐾 Zvieratá",["Ktoré zviera je najrýchlejšie na súši?|Gepard|Lev|Antilopa|Pštros","Koľko nôh má pavúk?|8|6|10|12","Ktoré zviera je najväčšie na svete?|Modrá veľryba|Slon africký|Žralok veľrybí|Žirafa","Ako sa volá mláďa kravy?|Teľa|Žriebä|Jahňa|Prasiatko","Ktoré zviera spáva hore nohami?|Netopier|Sova|Líška|Ježko"]],
-["🍕 Jedlo a pitie",["Z čoho sa vyrába hummus?|Z cíceru|Zo šošovice|Z fazule|Z hrachu","Z ktorej krajiny pochádza pizza?|Taliansko|Grécko|Španielsko|Francúzsko","Z akého mlieka sa vyrába bryndza?|Z ovčieho|Z kozieho|Z kravského|Z byvolieho","Čím sa typicky obaľujú rolky maki sushi?|Riasou nori|Šalátom|Palacinkou|Slaninou","Z čoho sa vyrába čokoláda?|Z kakaových bôbov|Z kávových zŕn|Z orechov|Z vanilky"]],
-["⚽ Šport",["Koľko hráčov má jeden futbalový tím na ihrisku?|11|9|10|12","Kde sa konali olympijské hry v roku 2016?|Rio de Janeiro|Londýn|Tokio|Peking","Kto vyhral majstrovstvá sveta vo futbale 2022?|Argentína|Francúzsko|Brazília|Chorvátsko","Koľko kruhov je na olympijskej vlajke?|5|4|6|7","Ktorý šport hrá Rafael Nadal?|Tenis|Golf|Squash|Stolný tenis"]],
-["🎬 Filmy a hudba",["Kto režíroval film Titanic?|James Cameron|Steven Spielberg|Ridley Scott|Christopher Nolan","V ktorom animovanom filme sa spieva pieseň Let It Go?|Ľadové kráľovstvo|Locika|Odvážna Vaiana|Rapunzel","Koľko strún má klasická gitara?|6|4|5|8","Kto napísal knihy o Harrym Potterovi?|J. K. Rowling|J. R. R. Tolkien|Roald Dahl|C. S. Lewis","Ktorý nástroj má čierne a biele klávesy?|Klavír|Husle|Flauta|Bubon"]],
-["🏛️ História",["V ktorom roku padol Berlínsky múr?|1989|1985|1987|1991","Kto objavil Ameriku v roku 1492?|Krištof Kolumbus|Vasco da Gama|Ferdinand Magalhães|Marco Polo","Ktorá krajina je domovom pyramíd v Gíze?|Egypt|Mexiko|Irak|Peru","Kto bol prvý človek na Mesiaci?|Neil Armstrong|Buzz Aldrin|Jurij Gagarin|John Glenn","V ktorom roku bola Nežná revolúcia?|1989|1968|1993|1948"]],
-["🔬 Veda a príroda",["Aký je chemický vzorec vody?|H2O|CO2|O2|NaCl","Ktorá planéta je najbližšie k Slnku?|Merkúr|Venuša|Mars|Zem","Koľko planét má Slnečná sústava?|8|7|9|10","Ktorý plyn tvorí najväčšiu časť vzduchu?|Dusík|Kyslík|Oxid uhličitý|Vodík","Pri akej teplote (°C) vrie voda pri hladine mora?|100|90|110|120"]],
-["🧩 Všeobecné",["Koľko mesiacov v roku má aspoň 28 dní?|12|1|2|6","Koľko dní má priestupný rok?|366|364|365|367","Koľko strán má šesťuholník?|6|5|7|8","Ktorý mesiac má 28 alebo 29 dní?|Február|Január|Marec|Apríl","Koľko minút je 2 a pol hodiny?|150|120|140|160"]],
-["💻 Technológie",["Kto založil firmu Microsoft?|Bill Gates|Steve Jobs|Mark Zuckerberg|Elon Musk","Čo znamená skratka WWW?|World Wide Web|Wide World Web|World Web Wide|Web World Wide","Ktorá firma vyrába iPhone?|Apple|Samsung|Google|Nokia","Ktorá hra je postavená z kociek a stavania?|Minecraft|Roblox|Fortnite|Tetris","Koľko bitov má jeden bajt?|8|4|16|32"]]
-];
-const BONUS=[["Aká je nadmorská výška Gerlachovského štítu (v metroch)?",2655],["Koľko kostí má dospelý človek?",206],["V ktorom roku bola dokončená Eiffelova veža?",1889],["Aká je priemerná vzdialenosť Zeme od Slnka (v miliónoch km)?",150],["Aký dlhý je rovník Zeme (v km)?",40075]];
 const $=s=>document.querySelector(s);
 const avh=a=>AVS.some(x=>x[0]===a)?`<img class="ava" src="avatars/${a}.png" alt="">`:(a||'🙂');
 const nm=p=>avh(p.av)+' '+esc(p.name);
 const esc=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
-function getQ(r,qi){const t=TOPICS[2*r+(qi<5?0:1)];const p=t[1][qi%5].split("|");let seed=(r*10+qi+1)*7919,idx=[0,1,2,3];
+function getQ(r,qi){const sl=(S.deck&&S.deck[r*10+qi])||[2*r+(qi<5?0:1),qi%5];const t=TOPICS[sl[0]]||TOPICS[0];const p=(typeof t[1]==="function"?t[1](sl[1]):t[1][sl[1]%t[1].length]).split("|");let seed=(r*10+qi+1)*7919,idx=[0,1,2,3];
  for(let i=3;i>0;i--){seed=(seed*16807)%2147483647;const j=seed%(i+1);[idx[i],idx[j]]=[idx[j],idx[i]]}
  return{topic:t[0],q:p[0],opts:idx.map(i=>({i,t:p[1+i]}))}}
-const AVS=[['nova','Nova'],['leo','Leo'],['mia','Mia'],['sam','Sam'],['chloe','Chloe'],['tom','Tom'],['zoe','Zoe'],['max','Max'],['ivy','Ivy'],['dave','Dave']],CC=[['#6b4a35','#3e2a1d'],['#7d7f86','#4b4d55'],['#a58a5c','#6d5632'],['#b05a3c','#702f1d'],['#2f7d55','#1a4a31'],['#6b3f7a','#3a2145'],['#8a7355','#554530'],['#2f6f8f','#1b4259'],['#9a6a2a','#5e3d13'],['#4a6a80','#2a3f4f']];
+const AVS=[['nova','Nova'],['leo','Leo'],['mia','Mia'],['sam','Sam'],['chloe','Chloe'],['tom','Tom'],['zoe','Zoe'],['max','Max'],['ivy','Ivy'],['dave','Dave']],CC=[['#6b4a35','#3e2a1d'],['#7d7f86','#4b4d55'],['#a58a5c','#6d5632'],['#b05a3c','#702f1d'],['#2f7d55','#1a4a31'],['#6b3f7a','#3a2145'],['#8a7355','#554530'],['#2f6f8f','#1b4259'],['#9a6a2a','#5e3d13'],['#4a6a80','#2a3f4f'],['#7a4a6a','#45283c']];
 let avDraft='nova',db=false,tab="quiz",uid,mode=null,S={ph:"lobby",r:0,qi:0},P={},me={name:"",a:{},g:{}},nameDraft="",guessDraft="",lastKey="",writing=Promise.resolve();
+const bn=r=>BONUS[(S.bonus&&S.bonus[r]!=null)?S.bonus[r]:r]||BONUS[0];
 function qDone(r,qi){if(r<S.r)return true;if(r>S.r)return false;if(["b","brev","score","final"].includes(S.ph))return true;if(S.ph==="lobby")return false;return qi<S.qi||(qi===S.qi&&S.ph==="rev")}
 function bDone(r){return r<S.r||(r===S.r&&["brev","score","final"].includes(S.ph))}
 function roundPts(p,r){let n=0;for(let q=0;q<10;q++)if(qDone(r,q)&&p.a&&p.a[r+"_"+q]===0)n++;
- if(bDone(r)){const t=BONUS[r][1];let best=1e18;Object.values(P).forEach(x=>{if(x.g&&x.g[r]!=null)best=Math.min(best,Math.abs(x.g[r]-t))});
+ if(bDone(r)){const t=bn(r)[1];let best=1e18;Object.values(P).forEach(x=>{if(x.g&&x.g[r]!=null)best=Math.min(best,Math.abs(x.g[r]-t))});
   if(p.g&&p.g[r]!=null&&Math.abs(p.g[r]-t)===best)n++}return n}
 function total(p){let s=0;for(let r=0;r<5;r++)s+=roundPts(p,r);return s}
 function table(){const rows=Object.entries(P).map(([id,p])=>({id,p,tot:total(p)})).sort((a,b)=>b.tot-a.tot);
  const rs=[0,1,2,3,4].filter(r=>bDone(r));
  return`<div class="scroll"><table><tr><th>Hráč</th>${rs.map(r=>`<th>K${r+1}</th>`).join("")}<th>Spolu</th></tr>${rows.map(x=>`<tr><td>${nm(x.p)}${x.id===uid?" (ty)":""}</td>${rs.map(r=>`<td>${roundPts(x.p,r)}</td>`).join("")}<td class="tot">${x.tot}</td></tr>`).join("")}</table></div>`}
 function save(){try{localStorage.setItem("kviz_name",me.name)}catch(e){}writing=writing.then(()=>fbSet("players/"+uid,JSON.parse(JSON.stringify(me)))).catch(()=>{})}
-function setState(s){fbSet("game/state",s).catch(()=>{})}
+function setState(s){fbSet("game/state",Object.assign({deck:S.deck||null,bonus:S.bonus||null},s)).catch(()=>{})}
 function next(){const{ph,r,qi}=S;
- if(ph==="lobby")return setState({ph:"q",r:0,qi:0});
+ if(ph==="lobby")return setState(Object.assign({ph:"q",r:0,qi:0},makeDeck()));
  if(ph==="q")return setState({ph:"rev",r,qi});
  if(ph==="rev")return setState(qi<9?{ph:"q",r,qi:qi+1}:{ph:"b",r,qi:9});
  if(ph==="b")return setState({ph:"brev",r,qi:9});
@@ -94,13 +83,13 @@ const L=["A","B","C","D"];
 function answeredCount(key){return Object.values(P).filter(p=>p.a&&p.a[key]!=null).length}
 function view(){const tv=mode==="tv";const{ph,r,qi}=S;const n=Object.keys(P).length;let h="";
  const head=`<div class="bar"><h1 class="brand">Rodinný kvíz</h1><span class="mu">${tv?"TV":nm(me)}</span></div>`;
- if(ph==="lobby"){h=`<div class="card"><h2>Hráči (${n})</h2>${Object.values(P).map(p=>`<span class="pill">${nm(p)}</span>`).join("")||'<span class="mu">Zatiaľ nikto. Otvorte odkaz na telefónoch a pridajte sa.</span>'}<p class="mu">5 kôl × 10 otázok + bonusový tip v každom kole.</p></div><div class="card"><h2>Kategórie</h2><div class="cats">${TOPICS.map((t,k)=>{const sp=t[0].indexOf(" ");return`<div class="cat" style="--c1:${CC[k][0]};--c2:${CC[k][1]}"><i>${t[0].slice(0,sp)}</i>${esc(t[0].slice(sp+1))}</div>`}).join("")}</div></div>`}
+ if(ph==="lobby"){h=`<div class="card"><h2>Hráči (${n})</h2>${Object.values(P).map(p=>`<span class="pill">${nm(p)}</span>`).join("")||'<span class="mu">Zatiaľ nikto. Otvorte odkaz na telefónoch a pridajte sa.</span>'}<p class="mu">5 kôl × 10 otázok + bonusový tip v každom kole. Témy sa vyžrebujú náhodne pri štarte: 10 tém, z každej 5 otázok.</p></div>`}
  else if(ph==="q"||ph==="rev"){const Q=getQ(r,qi),key=r+"_"+qi,mine=me.a[key];
   const optsH=Q.opts.map((o,k)=>{let c="opt";if(ph==="rev"){if(o.i===0)c+=" ok";else if(!tv&&mine===o.i)c+=" bad"}else if(!tv&&mine===o.i)c+=" sel";
    return`<button class="${c}" ${tv||ph==="rev"?"disabled":`onclick="ans('${key}',${o.i})"`}><span class="l">${L[k]}.</span><span class="t">${esc(o.t)}</span></button>`}).join("");
   const info=(tv&&ph==="q"?`<p class="mu">Odpovedalo ${answeredCount(key)} z ${n}</p>`:"")+(ph==="rev"?`<p>${tv?"Správne odpovedali: "+(Object.values(P).filter(p=>p.a[key]===0).map(p=>nm(p)).join(", ")||"nikto"):(mine===0?"✅ Správne!":mine==null?"Neodpovedal si.":"❌ Nesprávne.")}</p>`:"");
   h=`<div class="card"><div class="prog"><i style="width:${(r*10+qi+1)*2}%"></i></div><div class="mu">Kolo ${r+1}/5 · Otázka ${qi+1}/10 · ${Q.topic}</div><div class="qgrid"><div><div class="q">${esc(Q.q)}</div>${info}</div><div>${optsH}</div></div></div>`}
- else if(ph==="b"||ph==="brev"){const B=BONUS[r];
+ else if(ph==="b"||ph==="brev"){const B=bn(r);
   h=`<div class="card"><div class="mu">Kolo ${r+1} · Bonusová tipovačka</div><div class="q">${esc(B[0])}</div>`;
   if(ph==="b"){if(tv)h+=`<p class="mu">Tipli ${Object.values(P).filter(p=>p.g&&p.g[r]!=null).length} z ${n}</p>`;
    else h+=me.g[r]!=null?`<p>Tvoj tip: <b>${me.g[r]}</b> (môžeš ho zmeniť)</p>`:"",h+=`<input id="gi" type="number" inputmode="numeric" placeholder="Tvoj tip" value="${esc(guessDraft)}" oninput="guessDraft=this.value"><button class="btn" onclick="guess()">Odoslať tip</button>`}
@@ -141,11 +130,24 @@ function makeQR(){const el=$("#qr");if(!el)return;el.innerHTML="";if(window.QRCo
 function copyLink(){try{navigator.clipboard.writeText(shareUrl())}catch(e){}}
 function shareLink(){navigator.share({title:"Rodinný kvíz",url:shareUrl()}).catch(()=>{})}
 function rename(){const v=nameDraft.trim();if(!v)return;me.name=v;save();lastKey="";render()}
-function resetGame(){Promise.all(Object.keys(P).map(id=>fbSet("players/"+id,null))).finally(()=>setState({ph:"lobby",r:0,qi:0}))}
+function makeDeck(){let used;try{used=JSON.parse(localStorage.getItem("kviz_used")||"{}")}catch(e){used={}}
+ const sh=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+ const tops=sh(TOPICS.map((_,i)=>i)).slice(0,10),deck=[];
+ tops.forEach(t=>{const T=TOPICS[t][1];let picks;
+  if(typeof T==="function")picks=[0,1,2,3,4].map(()=>Math.floor(Math.random()*1e9)+1);
+  else{const u=used["t"+t]||[];let pool=T.map((_,i)=>i).filter(i=>!u.includes(i));if(pool.length<5){used["t"+t]=[];pool=T.map((_,i)=>i)}
+   picks=sh(pool).slice(0,5);used["t"+t]=(used["t"+t]||[]).concat(picks)}
+  picks.forEach(q=>deck.push([t,q]))});
+ const u=used.b||[];let bp=BONUS.map((_,i)=>i).filter(i=>!u.includes(i));if(bp.length<5){used.b=[];bp=BONUS.map((_,i)=>i)}
+ const bonus=sh(bp).slice(0,5);used.b=(used.b||[]).concat(bonus);
+ try{localStorage.setItem("kviz_used",JSON.stringify(used))}catch(e){}
+ return{deck,bonus}}
+function resetGame(){Promise.all(Object.keys(P).map(id=>fbSet("players/"+id,null))).finally(()=>setState({ph:"lobby",r:0,qi:0,deck:null,bonus:null}))}
 function setMode(m){mode=m;if(m==='tv'&&tab==='profile')tab='quiz';try{localStorage.setItem('kviz_mode',m)}catch(e){}lastKey='';render()}
 function join(){const v=nameDraft.trim();if(!v)return;me.name=v;save();render()}
 function ans(k,i){if(S.ph!=="q")return;me.a[k]=i;save();render()}
 function guess(){const v=parseFloat(guessDraft);if(isNaN(v)||S.ph!=="b")return;me.g[S.r]=v;guessDraft="";save();lastKey="";render()}
+if(document.addEventListener)document.addEventListener('gesturestart',e=>e.preventDefault());
 function start(){db=true;try{uid=localStorage.getItem("kviz_uid");if(!uid){uid="p"+Math.random().toString(36).slice(2,10);localStorage.setItem("kviz_uid",uid)}
  me.name=localStorage.getItem("kviz_name")||"";nameDraft=me.name;avDraft=localStorage.getItem("kviz_av");if(!AVS.some(x=>x[0]===avDraft))avDraft=AVS[0][0];me.av=avDraft;mode=localStorage.getItem("kviz_mode")||null}catch(e){uid="p"+Math.random().toString(36).slice(2,10)}
  render();
