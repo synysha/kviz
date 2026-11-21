@@ -13,9 +13,9 @@
 :root{--bg:#eaf0f7;--bg2:#dde6f1;--card:#fff;--tx:#14233a;--mu:#5d6c84;--ac:#8c6a4f;--acT:#fff;--ok:#1d8a6a;--bad:#c94a4a;--bd:#d5dfec;--sel:#1f4f55;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1b2d;--bg2:#08111f;--card:#16263d;--tx:#eef1f6;--mu:#93a1b8;--ac:#c4a484;--acT:#1b1410;--ok:#3fb68b;--bad:#e26d6d;--bd:#2a3d5a;--sel:#1f5a60;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#0f1b2d;--bg2:#08111f;--card:#16263d;--tx:#eef1f6;--mu:#93a1b8;--ac:#c4a484;--acT:#1b1410;--ok:#3fb68b;--bad:#e26d6d;--bd:#2a3d5a;--sel:#1f5a60;color-scheme:dark}
-*{box-sizing:border-box}html{touch-action:manipulation}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}*{touch-action:pan-x pan-y}input{font-size:16px}html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);background-image:linear-gradient(180deg,var(--bg),var(--bg2));background-attachment:fixed;color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;padding-bottom:84px}
-#app{max-width:820px;margin:0 auto;padding:14px}
+#app{max-width:820px;margin:0 auto;padding:14px calc(env(safe-area-inset-right,0px) + 14px) 14px calc(env(safe-area-inset-left,0px) + 14px)}
 .tv #app{max-width:1200px;font-size:clamp(13px,2.4vmin,30px)}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:16px;margin:10px 0;box-shadow:0 6px 20px rgba(0,0,0,.12)}
 h1,h2,.q{font-family:"Cormorant Garamond",Georgia,"Times New Roman",serif}
@@ -35,7 +35,7 @@ input{font:inherit;padding:13px;border-radius:12px;border:1.5px solid var(--bd);
 table{width:100%;border-collapse:collapse}td,th{padding:9px 6px;border-bottom:1px solid var(--bd);text-align:center}td:first-child,th:first-child{text-align:left}
 .tot{font-weight:800}.pill{display:inline-block;padding:4px 12px;border-radius:99px;background:var(--bd);margin:2px;font-size:.9em}
 .bar{display:flex;justify-content:space-between;align-items:center;gap:8px}.scroll{overflow-x:auto}.row{display:flex;gap:8px;flex-wrap:wrap}.medal{font-size:1.2em}
-#nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--card);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+#nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--card);border-top:1px solid var(--bd);padding:0 env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);z-index:5}
 #nav button{flex:1;font:inherit;font-size:.8em;background:none;border:0;color:var(--mu);padding:10px 4px 12px;cursor:pointer}
 #nav button b{display:block;font-size:1.6em;font-weight:400;line-height:1.2}#nav button.on{color:var(--ac);font-weight:700}
 #qr{display:inline-block;background:#fff;padding:12px;border-radius:12px;min-height:50px}
@@ -45,7 +45,7 @@ table{width:100%;border-collapse:collapse}td,th{padding:9px 6px;border-bottom:1p
 .avs{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:8px 0}.av{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:2px solid transparent;border-radius:14px;padding:6px 2px;cursor:pointer;color:var(--tx);font:inherit;font-size:.8em}.av img{width:100%;max-width:64px;aspect-ratio:1;border-radius:50%}.av.on{border-color:var(--ac);background:color-mix(in srgb,var(--ac) 22%,var(--card))}
 .ava{width:1.5em;height:1.5em;border-radius:50%;vertical-align:-.4em;object-fit:cover}
 @media(orientation:landscape){.qgrid{display:grid;grid-template-columns:1fr 1.1fr;gap:16px;align-items:center}.qgrid .q{margin-top:.1em}.cats{grid-template-columns:repeat(5,1fr)}}
-@media(orientation:landscape) and (max-height:520px){body{padding-bottom:44px}#app{padding:6px 10px}.bar{display:none}.card{padding:10px;margin:6px 0}.q{font-size:1.3em;margin:.1em 0 .3em}.opt{padding:7px 11px;margin:4px 0;font-size:.95em}h2{font-size:1.15em}.btn{padding:9px 14px;margin:4px 6px 4px 0}.mu{font-size:.8em}.cat{min-height:60px;padding:8px}.prog{margin-bottom:6px}#nav button{display:flex;justify-content:center;align-items:center;gap:6px;padding:6px 4px}#nav button b{display:inline;font-size:1.2em}}
+@media(orientation:landscape) and (max-height:520px){body{padding-bottom:44px}#app{padding:6px calc(env(safe-area-inset-right,0px) + 14px) 6px calc(env(safe-area-inset-left,0px) + 14px)}.bar{display:none}.card{padding:10px;margin:6px 0}.q{font-size:1.3em;margin:.1em 0 .3em}.opt{padding:7px 11px;margin:4px 0;font-size:.95em}h2{font-size:1.15em}.btn{padding:9px 14px;margin:4px 6px 4px 0}.mu{font-size:.8em}.cat{min-height:60px;padding:8px}.prog{margin-bottom:6px}#nav button{display:flex;justify-content:center;align-items:center;gap:6px;padding:6px 4px}#nav button b{display:inline;font-size:1.2em}}
 </style></head>
 <body><div id="app">Načítavam…</div>
 <script>
@@ -147,7 +147,7 @@ function setMode(m){mode=m;if(m==='tv'&&tab==='profile')tab='quiz';try{localStor
 function join(){const v=nameDraft.trim();if(!v)return;me.name=v;save();render()}
 function ans(k,i){if(S.ph!=="q")return;me.a[k]=i;save();render()}
 function guess(){const v=parseFloat(guessDraft);if(isNaN(v)||S.ph!=="b")return;me.g[S.r]=v;guessDraft="";save();lastKey="";render()}
-if(document.addEventListener)document.addEventListener('gesturestart',e=>e.preventDefault());
+if(document.addEventListener){['gesturestart','gesturechange','gestureend'].forEach(g=>document.addEventListener(g,e=>e.preventDefault()));document.addEventListener('touchmove',e=>{if(e.touches&&e.touches.length>1)e.preventDefault()},{passive:false});let lt=0;document.addEventListener('touchend',e=>{const n=Date.now();if(n-lt<350&&!(e.target.closest&&e.target.closest('button,input')))e.preventDefault();lt=n},{passive:false})}
 function start(){db=true;try{uid=localStorage.getItem("kviz_uid");if(!uid){uid="p"+Math.random().toString(36).slice(2,10);localStorage.setItem("kviz_uid",uid)}
  me.name=localStorage.getItem("kviz_name")||"";nameDraft=me.name;avDraft=localStorage.getItem("kviz_av");if(!AVS.some(x=>x[0]===avDraft))avDraft=AVS[0][0];me.av=avDraft;mode=localStorage.getItem("kviz_mode")||null}catch(e){uid="p"+Math.random().toString(36).slice(2,10)}
  render();
