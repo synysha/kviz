@@ -69,9 +69,9 @@ function table(){const rows=Object.entries(P).map(([id,p])=>({id,p,tot:total(p)}
  const rs=[0,1,2,3,4].filter(r=>bDone(r));
  return`<div class="scroll"><table><tr><th>Hráč</th>${rs.map(r=>`<th>K${r+1}</th>`).join("")}<th>Spolu</th></tr>${rows.map(x=>`<tr><td>${nm(x.p)}${x.id===uid?" (ty)":""}</td>${rs.map(r=>`<td>${roundPts(x.p,r)}</td>`).join("")}<td class="tot">${x.tot}</td></tr>`).join("")}</table></div>`}
 function save(){try{localStorage.setItem("kviz_name",me.name)}catch(e){}writing=writing.then(()=>fbSet("players/"+uid,JSON.parse(JSON.stringify(me)))).catch(()=>{})}
-function setState(s){fbSet("game/state",Object.assign({deck:S.deck||null,bonus:S.bonus||null},s)).catch(()=>{})}
+function setState(s){fbSet("game/state",Object.assign({deck:S.deck||null,bonus:S.bonus||null,aud:S.aud||null},s)).catch(()=>{})}
 function next(){const{ph,r,qi}=S;
- if(ph==="lobby")return setState(Object.assign({ph:"q",r:0,qi:0},makeDeck()));
+ if(ph==="lobby")return setState(Object.assign({ph:"q",r:0,qi:0},makeDeck(S.aud)));
  if(ph==="q")return setState({ph:"rev",r,qi});
  if(ph==="rev")return setState(qi<9?{ph:"q",r,qi:qi+1}:{ph:"b",r,qi:9});
  if(ph==="b")return setState({ph:"brev",r,qi:9});
@@ -83,7 +83,7 @@ const L=["A","B","C","D"];
 function answeredCount(key){return Object.values(P).filter(p=>p.a&&p.a[key]!=null).length}
 function view(){const tv=mode==="tv";const{ph,r,qi}=S;const n=Object.keys(P).length;let h="";
  const head=`<div class="bar"><h1 class="brand">Rodinný kvíz</h1><span class="mu">${tv?"TV":nm(me)}</span></div>`;
- if(ph==="lobby"){h=`<div class="card"><h2>Hráči (${n})</h2>${Object.values(P).map(p=>`<span class="pill">${nm(p)}</span>`).join("")||'<span class="mu">Zatiaľ nikto. Otvorte odkaz na telefónoch a pridajte sa.</span>'}<p class="mu">5 kôl × 10 otázok + bonusový tip v každom kole. Témy sa vyžrebujú náhodne pri štarte: 10 tém, z každej 5 otázok.</p></div>`}
+ if(ph==="lobby"){const kid=S.aud==="k";h=`<div class="card"><h2>Typ kvízu</h2>${tv?`<div class="row"><button class="btn ${kid?"":"alt"}" onclick="setAud('k')">🧒 Detský (12–15 rokov)</button><button class="btn ${kid?"alt":""}" onclick="setAud('d')">🧑 Dospelý</button></div>`:`<p><b>${kid?"🧒 Detský (12–15 rokov)":"🧑 Dospelý"}</b></p>`}<p class="mu">Detský: len otázky vhodné pre deti 12–15 rokov. Dospelý: všetky otázky. Témy sa vyžrebujú náhodne pri štarte.</p></div><div class="card"><h2>Hráči (${n})</h2>${Object.values(P).map(p=>`<span class="pill">${nm(p)}</span>`).join("")||'<span class="mu">Zatiaľ nikto. Otvorte odkaz na telefónoch a pridajte sa.</span>'}<p class="mu">5 kôl × 10 otázok + bonusový tip v každom kole.</p></div>`}
  else if(ph==="q"||ph==="rev"){const Q=getQ(r,qi),key=r+"_"+qi,mine=me.a[key];
   const optsH=Q.opts.map((o,k)=>{let c="opt";if(ph==="rev"){if(o.i===0)c+=" ok";else if(!tv&&mine===o.i)c+=" bad"}else if(!tv&&mine===o.i)c+=" sel";
    return`<button class="${c}" ${tv||ph==="rev"?"disabled":`onclick="ans('${key}',${o.i})"`}><span class="l">${L[k]}.</span><span class="t">${esc(o.t)}</span></button>`}).join("");
@@ -130,18 +130,23 @@ function makeQR(){const el=$("#qr");if(!el)return;el.innerHTML="";if(window.QRCo
 function copyLink(){try{navigator.clipboard.writeText(shareUrl())}catch(e){}}
 function shareLink(){navigator.share({title:"Rodinný kvíz",url:shareUrl()}).catch(()=>{})}
 function rename(){const v=nameDraft.trim();if(!v)return;me.name=v;save();lastKey="";render()}
-function makeDeck(){let used;try{used=JSON.parse(localStorage.getItem("kviz_used")||"{}")}catch(e){used={}}
+function makeDeck(aud){let used;try{used=JSON.parse(localStorage.getItem("kviz_used")||"{}")}catch(e){used={}}
+ const kid=aud==="k";
  const sh=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
- const tops=sh(TOPICS.map((_,i)=>i)).slice(0,10),deck=[];
- tops.forEach(t=>{const T=TOPICS[t][1];let picks;
-  if(typeof T==="function")picks=[0,1,2,3,4].map(()=>Math.floor(Math.random()*1e9)+1);
-  else{const u=used["t"+t]||[];let pool=T.map((_,i)=>i).filter(i=>!u.includes(i));if(pool.length<5){used["t"+t]=[];pool=T.map((_,i)=>i)}
+ const elig=t=>{const T=TOPICS[t][1];return typeof T==="function"?null:T.map((x,i)=>i).filter(i=>!kid||T[i].split("|")[5]!=="A")};
+ const cand=TOPICS.map((_,i)=>i).filter(t=>{const e=elig(t);return e===null||e.length>=5});
+ const tops=sh(cand).slice(0,10),deck=[];
+ tops.forEach(t=>{const e=elig(t);let picks;
+  if(e===null)picks=[0,1,2,3,4].map(()=>Math.floor(Math.random()*1e9)+1);
+  else{const u=used["t"+t]||[];let pool=e.filter(i=>!u.includes(i));if(pool.length<5){used["t"+t]=[];pool=e}
    picks=sh(pool).slice(0,5);used["t"+t]=(used["t"+t]||[]).concat(picks)}
   picks.forEach(q=>deck.push([t,q]))});
- const u=used.b||[];let bp=BONUS.map((_,i)=>i).filter(i=>!u.includes(i));if(bp.length<5){used.b=[];bp=BONUS.map((_,i)=>i)}
+ const be=BONUS.map((_,i)=>i).filter(i=>!kid||BONUS[i][2]!=="A");
+ const u=used.b||[];let bp=be.filter(i=>!u.includes(i));if(bp.length<5){used.b=[];bp=be}
  const bonus=sh(bp).slice(0,5);used.b=(used.b||[]).concat(bonus);
  try{localStorage.setItem("kviz_used",JSON.stringify(used))}catch(e){}
  return{deck,bonus}}
+function setAud(a){if(mode==="tv"&&S.ph==="lobby")setState({ph:"lobby",r:0,qi:0,aud:a})}
 function resetGame(){Promise.all(Object.keys(P).map(id=>fbSet("players/"+id,null))).finally(()=>setState({ph:"lobby",r:0,qi:0,deck:null,bonus:null}))}
 function setMode(m){mode=m;if(m==='tv'&&tab==='profile')tab='quiz';try{localStorage.setItem('kviz_mode',m)}catch(e){}lastKey='';render()}
 function join(){const v=nameDraft.trim();if(!v)return;me.name=v;save();render()}
